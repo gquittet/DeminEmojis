@@ -1,0 +1,6 @@
+Icons:  Roundicons
+        Smashicons
+        Freepik
+        Creaticca Creative Agency
+
+Author: Guillaume Quittet
