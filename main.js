@@ -10,7 +10,7 @@ var scorePanelHeight = 62;
 var gameWidth = width;
 // The tiles panel height
 var gameHeight = height - scorePanelHeight;
-// The tile state map (0: default 2: flag 3: unknown 4: clear)
+// The tile state map (0: default 2: flag 4: clear)
 var map;
 // The map dimensions
 var mapDimensions;
@@ -152,6 +152,9 @@ function detectTouch(tile) {
     tile.mouseup(onTouchUp);
     tile.bind("touchend", onTouchUp);
 
+    /**
+     * Action when click is pressed
+     */
     function onTouchDown() {
         timeout = setTimeout(function() {
             longPress = true;
@@ -164,6 +167,9 @@ function detectTouch(tile) {
         }
     }
 
+    /**
+     * Action when click is released
+     */
     function onTouchUp() {
         if (map[y][x] != 4) {
             if (longPress && (bombsNumber > 0) && hasGeneratedBombs) {
