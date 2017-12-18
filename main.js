@@ -28,6 +28,7 @@ var flagTimeout = 500;
 var clearBackgroundColor = "#40c4ff";
 var bombBackgroundColor = "#f44336";
 
+// All the magic starts from here.
 $(document).ready(function() {
     mapDimensions = getHighDivisors(tilesNumber);
     generateTiles(tilesNumber);
@@ -53,6 +54,12 @@ function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+/**
+ * Check if a value is in a table
+ * @param table The table
+ * @param value The value to check
+ * @return True or false if the value is or not in the table
+ */
 function isInTable(table, value) {
     if (table.length == 0)
         return false;
@@ -103,6 +110,9 @@ function generateTiles(n) {
     }
 }
 
+/**
+ * Generate the bombs map
+ */
 function generateBombs() {
     bombs = [map.length];
     for(var i = 0; i < map.length; i++) {
@@ -122,7 +132,7 @@ function generateBombs() {
 
 /**
 * Detect the touch on a tile
-* @param tile A tile
+* @param {Object} tile A tile
 */
 function detectTouch(tile) {
 
@@ -135,43 +145,39 @@ function detectTouch(tile) {
     var explosed;
 
     // Detect long touch
-    tile.mousedown(function() {
-        timeout = setTimeout(function() {
-            longPress = true;
-            if (hasGeneratedBombs && map[y][x] != 4)
-                $("#flagIndicator").css('opacity', 1);
-        }, flagTimeout);
-        if (map[y][x] != 4) {
-            $("#smiley").attr('src', 'img/click/' + random(1, 6) + '.png');
-            explosed = 0;
-        }
-    });
-    tile.bind("touchstart", function() {
-        timeout = setTimeout(function() {
-            longPress = true;
-            if (hasGeneratedBombs && map[y][x] != 4)
-                $("#flagIndicator").css('opacity', 1);
-        }, flagTimeout);
-        if (map[y][x] != 4) {
-            $("#smiley").attr('src', 'img/click/' + random(1, 6) + '.png');
-            explosed = 0;
-        }
-    });
+    tile.mousedown(onTouchDown);
+    tile.bind("touchstart", onTouchDown);
+
     // Action when finger released
-    tile.mouseup(function() {
+    tile.mouseup(onTouchUp);
+    tile.bind("touchend", onTouchUp);
+
+    function onTouchDown() {
+        timeout = setTimeout(function() {
+            longPress = true;
+            if (hasGeneratedBombs && map[y][x] != 4)
+                $("#flagIndicator").css('opacity', 1);
+        }, flagTimeout);
+        if (map[y][x] != 4) {
+            $("#smiley").attr('src', 'img/click/' + random(1, 6) + '.png');
+            explosed = 0;
+        }
+    }
+
+    function onTouchUp() {
         if (map[y][x] != 4) {
             if (longPress && (bombsNumber > 0) && hasGeneratedBombs) {
-                flagTile($(this), x, y);
+                flagTile(tile, x, y);
             } else if (longPress && hasGeneratedBombs) {
 
             } else {
-                map[y][x] = 4;
                 if (!hasGeneratedBombs) {
+                    map[y][x] = 4;
                     generateBombs(tilesNumber, bombsPercentage);
                     hasGeneratedBombs = true;
-                    console.log(bombs);
                 }
                 explosed = clearTile(x, y);
+                map[y][x] = 4;
             }
             if (explosed == 0)
                 $("#smiley").attr('src', 'img/happy/' + random(1, 8) + '.png');
@@ -180,33 +186,9 @@ function detectTouch(tile) {
         clearTimeout(timeout);
         longPress = false;
         hasWon();
-        console.log(map);
-    });
-    tile.bind("touchend", function() {
-        if (map[y][x] != 4) {
-            if (longPress && (bombsNumber > 0) && hasGeneratedBombs) {
-                flagTile($(this), x, y);
-            } else if (longPress && hasGeneratedBombs) {
-
-            } else {
-                map[y][x] = 4;
-                if (!hasGeneratedBombs) {
-                    generateBombs(tilesNumber, bombsPercentage);
-                    hasGeneratedBombs = true;
-                    console.log(bombs);
-                }
-                explosed = clearTile(x, y);
-            }
-            if (explosed == 0)
-                $("#smiley").attr('src', 'img/happy/' + random(1, 8) + '.png');
-        }
-        $("#flagIndicator").css('opacity', 0);
-        clearTimeout(timeout);
-        longPress = false;
-        hasWon();
-        console.log(map);
-    });
+    }
 }
+
 
 /**
 * Clear a tile
@@ -215,6 +197,9 @@ function detectTouch(tile) {
 * @param {int} y The y coordinate
 */
 function clearTile(x, y) {
+    if (map[y][x] == 2) {
+        setMinesLabel(++bombsNumber);
+    }
     if (bombs[y][x] == 1) {
         $("#smiley").attr('src', 'img/sad/' + random(1, 3) + '.png');
         loose();
@@ -251,12 +236,17 @@ function clearTile(x, y) {
         } else {
             tile.append("<span style=\"font-size:" + parseInt(tile.height()) + "px\">" + bombsAround + "</span>");
         }
-        console.log(adjacentTiles);
         index += 1;
     }
     return 0;
 }
 
+/**
+ * Return the adjacent tiles of a current tile
+ * @param {int} x The x position of the current tile
+ * @param {int} y The y position of the current tile
+ * @return The adjacent tiles of the current tile
+ */
 function getAdjacentTiles(x, y) {
     var adjacentTiles = [];
     var xMax = mapDimensions[1] - 1;
@@ -282,6 +272,10 @@ function getAdjacentTiles(x, y) {
     return adjacentTiles;
 }
 
+/**
+ * Clear the tiles in this table
+ * @param adjacentTiles A table with tiles in it
+ */
 function clearAdjacentTiles(adjacentTiles) {
     var x = 0;
     var y = 0;
@@ -295,6 +289,10 @@ function clearAdjacentTiles(adjacentTiles) {
     }
 }
 
+/**
+ * Remove bombs from a table
+ * @param table A table with bombs inside
+ */
 function removeBombsFromTable(table) {
     var tableWithoutBombs = [];
     table.forEach(function(element) {
@@ -345,6 +343,9 @@ function flagTile(tile, x, y) {
     }
 }
 
+/**
+ * Increase the timer
+ */
 function increaseTimer() {
     var seconds = parseInt($("#time").text());
     seconds += 1;
@@ -359,6 +360,10 @@ function increaseTimer() {
     return 0;
 }
 
+/**
+ * Set the mines label
+ * @param n The number of bombs remaining
+ */
 function setMinesLabel(n) {
     if (n < 10)
         $("#mines").text("00" + n);
@@ -368,6 +373,9 @@ function setMinesLabel(n) {
         $("#mines").text(n);
 }
 
+/**
+ * Reveal all bombs
+ */
 function showAllBombs() {
     for (var i = 0; i < bombs.length; i++) {
         for (var j = 0; j < bombs[i].length; j++) {
@@ -381,12 +389,19 @@ function showAllBombs() {
     }
 }
 
+/**
+ * Loose the game
+ */
 function loose() {
     showAllBombs();
     $("#flagIndicator").css('opacity', 0);
     setTimeout(function() { gameOver(0); }, 1000);
 }
 
+/**
+ * Game over with a reason
+ * @param reason The reason of the game over
+ */
 function gameOver(reason) {
     clearInterval(timer);
     var condition = false;
@@ -399,6 +414,9 @@ function gameOver(reason) {
         window.location.reload();
 }
 
+/**
+ * Check if the user has won the game
+ */
 function hasWon() {
     var condition = true;
     for (var i = 0; i < map.length; i++) {
@@ -412,5 +430,4 @@ function hasWon() {
         $("#smiley").attr('src', 'img/love/' + random(1, 2) + '.png');
         setTimeout(function() { gameOver(1); }, 200);
     }
-
 }
