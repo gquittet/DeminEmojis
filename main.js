@@ -31,7 +31,13 @@ var bombBackgroundColor = "#f44336";
 // All the magic starts from here.
 $(document).ready(function() {
     mapDimensions = getHighDivisors(tilesNumber);
+    // Update game interface size
+    const game = document.getElementById("game")
+    game.style.width = window.innerWidth + "px";
+    game.style.height = window.innerHeight + "px";
+    // Generate tiles
     generateTiles(tilesNumber);
+    // Get bombs number
     bombsNumber = Math.floor(tilesNumber / 100 * bombsPercentage);
     setMinesLabel(bombsNumber);
     $("#smiley").bind("touchend click", function() {
@@ -474,9 +480,9 @@ function gameOver(reason) {
     clearInterval(timer);
     var condition = false;
     if (reason == 0) {
-        condition = !alert("You loose");
+        condition = !alert("You loose 😭");
     } else if (reason == 1) {
-        condition = !alert("You win");
+        condition = !alert("You win !!! 😁");
     }
     if (condition)
         window.location.reload();
