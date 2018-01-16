@@ -1,7 +1,7 @@
 // The game width
-var width = 360;
+var width = window.innerWidth;
 // The game height
-var height = 640;
+var height = window.innerHeight;
 // The tiles
 var tilesNumber = 50;
 // The score panel height
@@ -14,7 +14,7 @@ var gameHeight = height - scorePanelHeight;
 var map;
 // The map dimensions
 var mapDimensions;
-// The bomb map (0: none 1: bomb  4: first tile)
+// The bomb map (0: none 1: bomb  3: first tile)
 var bombs;
 // The bombs percentage (tiles: 50 percentage: 20 bombs: 10)
 var bombsPercentage = 20;
@@ -37,19 +37,25 @@ $(document).ready(function() {
     $("#smiley").bind("touchend click", function() {
         window.location.reload();
     });
-    timer = setInterval(function() { if (!window.blurred) increaseTimer(); }, 1000);
+    timer = setInterval(function() {
+        if (!window.blurred) increaseTimer();
+    }, 1000);
 });
 
 // Stop the timer when lost the focus
-window.onblur = function() { window.blurred = true; }
-window.onfocus = function() { window.blurred = false; }
+window.onblur = function() {
+    window.blurred = true;
+}
+window.onfocus = function() {
+    window.blurred = false;
+}
 
 /**
-* Return a random number between two numbers [min, max]
-* @param min The minimum
-* @param max The maximum
-* @return A random number
-*/
+ * Return a random number between two numbers [min, max]
+ * @param min The minimum
+ * @param max The maximum
+ * @return A random number
+ */
 function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -72,10 +78,10 @@ function isInTable(table, value) {
 }
 
 /**
-* Return the high divisors of a number
-* @param n The number
-* @return The high divisors of a number
-*/
+ * Return the high divisors of a number
+ * @param n The number
+ * @return The high divisors of a number
+ */
 function getHighDivisors(n) {
     var divisors = [0, 1];
     var i = 2;
@@ -90,9 +96,9 @@ function getHighDivisors(n) {
 }
 
 /**
-* Generate n tiles
-* @param n The tiles number
-*/
+ * Generate n tiles
+ * @param n The tiles number
+ */
 function generateTiles(n) {
     map = [mapDimensions[0]];
     for (var i = 0; i < mapDimensions[0]; i++) {
@@ -115,7 +121,7 @@ function generateTiles(n) {
  */
 function generateBombs() {
     bombs = [map.length];
-    for(var i = 0; i < map.length; i++) {
+    for (var i = 0; i < map.length; i++) {
         bombs[i] = map[i].slice(0);
     }
     var minesPlaced = 0;
@@ -124,16 +130,16 @@ function generateBombs() {
         do {
             x = random(0, mapDimensions[1] - 1);
             y = random(0, mapDimensions[0] - 1);
-        } while (bombs[y][x] == 1 || bombs[y][x] == 4);
+        } while (bombs[y][x] == 1 || bombs[y][x] == 3);
         bombs[y][x] = 1;
         minesPlaced++;
     }
 }
 
 /**
-* Detect the touch on a tile
-* @param {Object} tile A tile
-*/
+ * Detect the touch on a tile
+ * @param {Object} tile A tile
+ */
 function detectTouch(tile) {
 
     var timeout;
@@ -178,7 +184,7 @@ function detectTouch(tile) {
 
             } else {
                 if (!hasGeneratedBombs) {
-                    map[y][x] = 4;
+                    map[y][x] = 3;
                     generateBombs(tilesNumber, bombsPercentage);
                     hasGeneratedBombs = true;
                 }
@@ -197,11 +203,11 @@ function detectTouch(tile) {
 
 
 /**
-* Clear a tile
-* @param {Object} tile A tile
-* @param {int} x The x coordinate
-* @param {int} y The y coordinate
-*/
+ * Clear a tile
+ * @param {Object} tile A tile
+ * @param {int} x The x coordinate
+ * @param {int} y The y coordinate
+ */
 function clearTile(x, y) {
     if (map[y][x] == 2) {
         setMinesLabel(++bombsNumber);
@@ -211,7 +217,9 @@ function clearTile(x, y) {
         loose();
         return 1;
     }
-    var queue = [[x, y]];
+    var queue = [
+        [x, y]
+    ];
     var adjacentTiles = [];
     var bombsAround = 0;
     var currentTile;
@@ -240,7 +248,10 @@ function clearTile(x, y) {
                     queue.push(element);
             });
         } else {
-            tile.append("<span style=\"font-size:" + parseInt(tile.height()) + "px\">" + bombsAround + "</span>");
+            // Detect if the tile has already a span inside.
+            if (!tile.has("span").length) {
+                tile.append("<span style=\"font-size: " + parseInt(tile.height() / 4 * 3) + "px\">" + bombsAround + "</span>");
+            }
         }
         index += 1;
     }
@@ -258,23 +269,72 @@ function getAdjacentTiles(x, y) {
     var xMax = mapDimensions[1] - 1;
     var yMax = mapDimensions[0] - 1;
     if (x == 0 && y == 0)
-        adjacentTiles = [[x, y + 1], [x + 1, y + 1], [x + 1, y]];
+        adjacentTiles = [
+            [x, y + 1],
+            [x + 1, y + 1],
+            [x + 1, y]
+        ];
     else if ((x > 0 && x < xMax) && y == 0)
-        adjacentTiles = [[x - 1, y], [x - 1, y + 1], [x, y + 1], [x + 1, y + 1], [x + 1, y]];
+        adjacentTiles = [
+            [x - 1, y],
+            [x - 1, y + 1],
+            [x, y + 1],
+            [x + 1, y + 1],
+            [x + 1, y]
+        ];
     else if (x == xMax && y == 0)
-        adjacentTiles = [[x - 1, y], [x - 1, y + 1], [x, y + 1]];
+        adjacentTiles = [
+            [x - 1, y],
+            [x - 1, y + 1],
+            [x, y + 1]
+        ];
     else if (x == xMax && (y > 0 && y < yMax))
-        adjacentTiles = [[x, y - 1], [x - 1, y - 1], [x - 1, y], [x - 1, y + 1], [x, y + 1]];
+        adjacentTiles = [
+            [x, y - 1],
+            [x - 1, y - 1],
+            [x - 1, y],
+            [x - 1, y + 1],
+            [x, y + 1]
+        ];
     else if (x == xMax && y == yMax)
-        adjacentTiles = [[x, y - 1], [x - 1, y - 1], [x - 1, y]];
+        adjacentTiles = [
+            [x, y - 1],
+            [x - 1, y - 1],
+            [x - 1, y]
+        ];
     else if ((x > 0 && x < xMax) && y == yMax)
-        adjacentTiles = [[x - 1, y], [x - 1, y - 1], [x, y - 1], [x + 1, y - 1], [x + 1, y]];
+        adjacentTiles = [
+            [x - 1, y],
+            [x - 1, y - 1],
+            [x, y - 1],
+            [x + 1, y - 1],
+            [x + 1, y]
+        ];
     else if (x == 0 && y == yMax)
-        adjacentTiles = [[x + 1, y], [x + 1, y - 1], [x, y - 1]];
+        adjacentTiles = [
+            [x + 1, y],
+            [x + 1, y - 1],
+            [x, y - 1]
+        ];
     else if (x == 0 && (y > 0 && y < yMax))
-        adjacentTiles = [[x, y - 1], [x + 1, y - 1], [x + 1, y], [x + 1, y + 1], [x, y + 1]];
+        adjacentTiles = [
+            [x, y - 1],
+            [x + 1, y - 1],
+            [x + 1, y],
+            [x + 1, y + 1],
+            [x, y + 1]
+        ];
     else
-        adjacentTiles = [[x - 1, y - 1], [x, y - 1], [x + 1, y - 1], [x + 1, y], [x + 1, y + 1], [x, y + 1], [x - 1, y + 1], [x - 1, y]];
+        adjacentTiles = [
+            [x - 1, y - 1],
+            [x, y - 1],
+            [x + 1, y - 1],
+            [x + 1, y],
+            [x + 1, y + 1],
+            [x, y + 1],
+            [x - 1, y + 1],
+            [x - 1, y]
+        ];
     return adjacentTiles;
 }
 
@@ -313,12 +373,12 @@ function removeBombsFromTable(table) {
 }
 
 /**
-* Count the bombs around a tile
-* @param {Object} tile A tile
-* @param {int} x The x coordinate
-* @param {int} y The y coordinate
-* @return {int} The number of bombs around a tile
-*/
+ * Count the bombs around a tile
+ * @param {Object} tile A tile
+ * @param {int} x The x coordinate
+ * @param {int} y The y coordinate
+ * @return {int} The number of bombs around a tile
+ */
 function countBombsAround(adjacentTiles) {
     var number = 0;
     for (var i = 0; i < adjacentTiles.length; i++) {
@@ -331,11 +391,11 @@ function countBombsAround(adjacentTiles) {
 }
 
 /**
-* Put a flag on a tile
-* @param tile A tile
-* @param x The x coordinate
-* @param y The y coordinate
-*/
+ * Put a flag on a tile
+ * @param tile A tile
+ * @param x The x coordinate
+ * @param y The y coordinate
+ */
 function flagTile(tile, x, y) {
     if (map[y][x] == 2) {
         var id = tile.attr('id');
@@ -401,7 +461,9 @@ function showAllBombs() {
 function loose() {
     showAllBombs();
     $("#flagIndicator").css('opacity', 0);
-    setTimeout(function() { gameOver(0); }, 1000);
+    setTimeout(function() {
+        gameOver(0);
+    }, 1000);
 }
 
 /**
@@ -434,6 +496,8 @@ function hasWon() {
     }
     if (condition) {
         $("#smiley").attr('src', 'img/love/' + random(1, 2) + '.png');
-        setTimeout(function() { gameOver(1); }, 200);
+        setTimeout(function() {
+            gameOver(1);
+        }, 200);
     }
 }
