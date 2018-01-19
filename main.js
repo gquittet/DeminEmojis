@@ -23,7 +23,7 @@ let bombsNumber;
 // Has already generated bombs
 let hasGeneratedBombs = false;
 let timer;
-const flagTimeout = 500;
+const flagTimeout = 300;
 
 const clearBackgroundColor = "#40c4ff";
 const bombBackgroundColor = "#f44336";
