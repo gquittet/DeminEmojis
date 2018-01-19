@@ -5,11 +5,11 @@ const height = window.innerHeight;
 // The tiles
 const tilesNumber = 50;
 // The score panel height
-const scorePanelHeight = 62;
+let scorePanelHeight = height / 10;
 // The tiles panel width
-const gameWidth = width;
+let gameWidth = width;
 // The tiles panel height
-const gameHeight = height - scorePanelHeight;
+let gameHeight = height - scorePanelHeight;
 // The tile state map (0: default 2: flag 4: clear)
 let map;
 // The map dimensions
@@ -31,15 +31,16 @@ const bombBackgroundColor = "#f44336";
 // All the magic starts from here.
 $(document).ready(function () {
     mapDimensions = getHighDivisors(tilesNumber);
-    // Update game interface size
-    const game = document.getElementById("game")
-    game.style.width = window.innerWidth + "px";
-    game.style.height = window.innerHeight + "px";
+    // Switch form factor if  the screen is vertical or horizontal
+    if (gameHeight < gameWidth)
+        mapDimensions = [mapDimensions[1], mapDimensions[0]];
     // Generate tiles
-    generateTiles(mapDimensions);
+    generateTiles();
+    // Reload the game on smiley click
     $("#smiley").bind("touchend click", function () {
         window.location.reload();
     });
+    // Increase timer after 1 second
     timer = setInterval(function () {
         if (!window.blurred) increaseTimer();
     }, 1000);
@@ -51,6 +52,32 @@ window.onblur = function () {
 }
 window.onfocus = function () {
     window.blurred = false;
+}
+
+// Adapt interface when resizing window
+window.onresize = function () {
+    scorePanelHeight = window.innerHeight / 10;
+    gameWidth = window.innerWidth;
+    gameHeight = window.innerHeight - scorePanelHeight;
+    let tile;
+    for (let i = 0; i < mapDimensions[0]; i++) {
+        for (let j = 0; j < mapDimensions[1]; j++) {
+            tile = $("#tx" + j + "y" + i);
+            tile.css('width', gameWidth / mapDimensions[1]);
+            tile.css('height', gameHeight / mapDimensions[0]);
+            tile.css('top', (i * gameHeight / mapDimensions[0]) + scorePanelHeight);
+            tile.css('left', (j * gameWidth / mapDimensions[1]));
+            // Adapt text inside the tile
+            if (tile.has("span").length) {
+                const tileSpan = tile.find("span");
+                if (tile.height() <= tile.width()) {
+                    tileSpan.css("font-size", parseInt(tile.height() / 4 * 3) + "px");
+                } else
+                    tileSpan.css("font-size", parseInt(tile.width() / 4 * 3) + "px");
+            }
+        }
+    }
+    updateTileImage(tile);
 }
 
 /**
@@ -85,27 +112,43 @@ function getHighDivisors(n) {
  * Generate n tiles
  * @param n The tiles number
  */
-function generateTiles(mapDimensions) {
+function generateTiles() {
     map = [mapDimensions[0]];
+    let tile;
     for (let i = 0; i < mapDimensions[0]; i++) {
         map[i] = [mapDimensions[1]];
         for (let j = 0; j < mapDimensions[1]; j++) {
             map[i][j] = 0;
             $("#tiles-panel").append("<div id=\"tx" + j + "y" + i + "\" class=\"tile\"></div>");
-            const tile = $("#tx" + j + "y" + i);
+            tile = $("#tx" + j + "y" + i);
             tile.css('width', gameWidth / mapDimensions[1]);
             tile.css('height', gameHeight / mapDimensions[0]);
             tile.css('top', (i * gameHeight / mapDimensions[0]) + scorePanelHeight);
             tile.css('left', (j * gameWidth / mapDimensions[1]));
-            detectTouch(mapDimensions, tile);
+            detectTouch(tile);
         }
+    }
+    updateTileImage(tile);
+}
+
+/**
+ * Update the image size that is inside a tile
+ * @param {Object} tile A tile
+ */
+function updateTileImage(tile) {
+    if (tile.height <= tile.width) {
+        $(".tile img").css("width", "auto");
+        $(".tile img").css("height", "75%");
+    } else {
+        $(".tile img").css("width", "75%");
+        $(".tile img").css("height", "auto");
     }
 }
 
 /**
  * Generate the bombs map
  */
-function generateBombs(mapDimensions, tilesNumber, bombsPercentage) {
+function generateBombs(tilesNumber, bombsPercentage) {
     bombs = [map.length];
     bombsNumber = Math.floor(tilesNumber / 100 * bombsPercentage);
     for (let i = 0; i < map.length; i++) {
@@ -128,7 +171,7 @@ function generateBombs(mapDimensions, tilesNumber, bombsPercentage) {
  * Detect the touch on a tile
  * @param {Object} tile A tile
  */
-function detectTouch(mapDimensions, tile) {
+function detectTouch(tile) {
 
     let timeout;
     let longPress = false;
@@ -171,7 +214,7 @@ function detectTouch(mapDimensions, tile) {
             } else {
                 if (!hasGeneratedBombs) {
                     map[y][x] = 3;
-                    generateBombs(mapDimensions, tilesNumber, bombsPercentage);
+                    generateBombs(tilesNumber, bombsPercentage);
                     hasGeneratedBombs = true;
                 }
                 explosed = clearTile(x, y);
@@ -236,7 +279,10 @@ function clearTile(x, y) {
         } else {
             // Detect if the tile has already a span inside.
             if (!tile.has("span").length) {
-                tile.append("<span style=\"font-size: " + parseInt(tile.height() / 4 * 3) + "px\">" + bombsAround + "</span>");
+                if (tile.height() <= tile.width())
+                    tile.append("<span style=\"font-size: " + parseInt(tile.height() / 4 * 3) + "px\">" + bombsAround + "</span>");
+                else
+                    tile.append("<span style=\"font-size: " + parseInt(tile.width() / 4 * 3) + "px\">" + bombsAround + "</span>");
             }
         }
         index += 1;
@@ -388,7 +434,7 @@ function flagTile(tile, x, y) {
         setMinesLabel(++bombsNumber);
         map[y][x] = 0;
     } else {
-        tile.append("<img src=\"img/flag/1.png\" alt=\"flag\">");
+        tile.append("<img class='center-img' src=\"img/flag/1.png\" alt=\"flag\">");
         setMinesLabel(--bombsNumber);
         map[y][x] = 2;
     }
@@ -434,7 +480,7 @@ function showAllBombs() {
                 $("#tx" + j + "y" + i + " img").remove();
                 const tile = $("#tx" + j + "y" + i);
                 tile.css('background', bombBackgroundColor);
-                tile.append("<img src=\"img/mines/1.png\" alt=\"mine\">");
+                tile.append("<img class='center-img' src=\"img/mines/1.png\" alt=\"mine\">");
             }
         }
     }
