@@ -2,7 +2,7 @@
 
 html {
     font-family: Arial, monospace, sans-serif;
-    overflow-y: scroll;
+    overflow: hidden;
 }
 
 body {
