@@ -128,7 +128,6 @@ function generateTiles() {
             tile.css('width', gameWidth / mapDimensions[1]);
             tile.css('height', gameHeight / mapDimensions[0]);
             tile.css('top', top);
-            console.log(j * gameWidth / mapDimensions[1]);
             tile.css('left', j * gameWidth / mapDimensions[1]);
             detectTouch(tile);
         }
