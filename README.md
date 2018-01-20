@@ -3,7 +3,9 @@
 DéminEmojis is a simple minesweeper game with emojis.  
 It's free and there's no ads inside of it.  
 
-Here's the link: [https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper](https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper)
+Here's the link to the Android app: [https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper](https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper)
+
+To play it into your browser : https://gquittet.github.io/DeminEmojis/
 
 ## Why this game?
 
