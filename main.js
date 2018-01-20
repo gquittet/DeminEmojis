@@ -214,7 +214,7 @@ function detectTouch(tile) {
      */
     function onTouchUp() {
         if (map[y][x] != 4) {
-            if (longPress && (bombsNumber > 0) && hasGeneratedBombs) {
+            if (longPress && (bombsNumber >= 0) && hasGeneratedBombs) {
                 flagTile(tile, x, y);
             } else {
                 if (!hasGeneratedBombs) {
@@ -438,7 +438,7 @@ function flagTile(tile, x, y) {
         $('#' + id + " img").remove();
         setMinesLabel(++bombsNumber);
         map[y][x] = 0;
-    } else {
+    } else if (map[y][x] != 2 && bombsNumber > 0) {
         tile.append("<img class='center-img' src=\"img/flag/1.png\" alt=\"flag\">");
         setMinesLabel(--bombsNumber);
         map[y][x] = 2;
