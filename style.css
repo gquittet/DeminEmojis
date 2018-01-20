@@ -9,11 +9,6 @@ body {
     margin: 0;
 }
 
-/* * {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-} */
 
 /*Game interface*/
 
@@ -95,11 +90,16 @@ td > div {
     height: 90vh;
 }
 
+.unselectable {
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 .tile {
     position: fixed;
     text-align: center;
-    -moz-user-select: none;
-    user-select: none;
     border: 0.5px solid black;
     background: #0091ea; /* For browsers that do not support gradients */
     background: -webkit-linear-gradient(#0091ea, #00b0ff); /* For Safari 5.1 to 6.0 */
