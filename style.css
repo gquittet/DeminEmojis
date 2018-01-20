@@ -7,14 +7,13 @@ html {
 
 body {
     margin: 0;
-    background: black;
 }
 
-* {
-    -webkit-box-sizing: border-box;
+/* * {
     -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
-}
+} */
 
 /*Game interface*/
 
@@ -32,10 +31,15 @@ body {
 }
 
 #interface {
+    position: relative;
+    z-index: 3;
     width: 100%;
-    height: 10vh;
+    height: 10.5vh;
     padding: 0 1%;
     background-color: #303f9f;
+    -moz-box-shadow: 0 1px 10px black;
+    -webkit-box-shadow: 0 1px 10px black;
+    box-shadow: 0 1px 10px black;
 }
 
 td {
@@ -70,7 +74,7 @@ td > div {
 
 #mines, #time {
     font-size: 2em;
-    font-size: 6vh;
+    font-size: 5vh;
     color: #e8eaf6;
 }
 
@@ -94,7 +98,6 @@ td > div {
 .tile {
     position: fixed;
     text-align: center;
-    display: table;
     -moz-user-select: none;
     user-select: none;
     border: 0.5px solid black;
@@ -106,8 +109,14 @@ td > div {
 }
 
 .tile span {
-    display: table-cell;
-    vertical-align: middle;
+    position: relative;
+    float: left;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 .tile img {

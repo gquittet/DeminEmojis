@@ -4,8 +4,10 @@ const width = window.innerWidth;
 const height = window.innerHeight;
 // The tiles
 const tilesNumber = 50;
+// Score panel size percentage
+const scorePanelPercentage = 1 / 100 * 10;
 // The score panel height
-let scorePanelHeight = height / 10;
+let scorePanelHeight = height * scorePanelPercentage;
 // The tiles panel width
 let gameWidth = width;
 // The tiles panel height
@@ -56,17 +58,18 @@ window.onfocus = function () {
 
 // Adapt interface when resizing window
 window.onresize = function () {
-    scorePanelHeight = window.innerHeight / 10;
+    scorePanelHeight = window.innerHeight * scorePanelPercentage;
     gameWidth = window.innerWidth;
     gameHeight = window.innerHeight - scorePanelHeight;
     let tile;
     for (let i = 0; i < mapDimensions[0]; i++) {
+        const top = (i * gameHeight / mapDimensions[0]) + scorePanelHeight;
         for (let j = 0; j < mapDimensions[1]; j++) {
             tile = $("#tx" + j + "y" + i);
             tile.css('width', gameWidth / mapDimensions[1]);
             tile.css('height', gameHeight / mapDimensions[0]);
-            tile.css('top', (i * gameHeight / mapDimensions[0]) + scorePanelHeight);
-            tile.css('left', (j * gameWidth / mapDimensions[1]));
+            tile.css('top', top);
+            tile.css('left', j * gameWidth / mapDimensions[1]);
             // Adapt text inside the tile
             if (tile.has("span").length) {
                 const tileSpan = tile.find("span");
@@ -117,14 +120,16 @@ function generateTiles() {
     let tile;
     for (let i = 0; i < mapDimensions[0]; i++) {
         map[i] = [mapDimensions[1]];
+        const top = (i * gameHeight / mapDimensions[0]) + scorePanelHeight;
         for (let j = 0; j < mapDimensions[1]; j++) {
             map[i][j] = 0;
             $("#tiles-panel").append("<div id=\"tx" + j + "y" + i + "\" class=\"tile\"></div>");
             tile = $("#tx" + j + "y" + i);
             tile.css('width', gameWidth / mapDimensions[1]);
             tile.css('height', gameHeight / mapDimensions[0]);
-            tile.css('top', (i * gameHeight / mapDimensions[0]) + scorePanelHeight);
-            tile.css('left', (j * gameWidth / mapDimensions[1]));
+            tile.css('top', top);
+            console.log(j * gameWidth / mapDimensions[1]);
+            tile.css('left', j * gameWidth / mapDimensions[1]);
             detectTouch(tile);
         }
     }
