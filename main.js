@@ -494,9 +494,9 @@ function showAllBombs() {
  * Loose the game
  */
 function loose() {
-    showAllBombs();
-    $("#flagIndicator").css('opacity', 0);
     clearInterval(timer);
+    $("#flagIndicator").css('opacity', 0);
+    showAllBombs();
     setTimeout(function () {
         gameOver(0);
     }, 1000);
