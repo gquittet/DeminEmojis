@@ -496,6 +496,7 @@ function showAllBombs() {
 function loose() {
     showAllBombs();
     $("#flagIndicator").css('opacity', 0);
+    clearInterval(timer);
     setTimeout(function () {
         gameOver(0);
     }, 1000);
