@@ -1,4 +1,4 @@
-# DéminEmojis
+# ![Logo](assets/logo.png "DéminEmojis logo") DéminEmojis
 
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Version](https://img.shields.io/badge/version-1.0.8-blue.svg)
