@@ -39,3 +39,7 @@ only but I've made an exception for this game.
 | Smashicons                | [https://smashicons.com/](https://smashicons.com/)     |
 | Freepik                   | [https://www.freepik.com/](https://www.freepik.com/)   |
 | Creaticca Creative Agency | [http://www.creaticca.com/](http://www.creaticca.com/) |
+
+## License
+
+Code is under the [MIT License](https://github.com/gquittet/DeminEmojis/blob/master/LICENSE).
