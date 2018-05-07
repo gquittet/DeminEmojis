@@ -12,6 +12,10 @@ or play it directly from your search browser.
 
 **Link:** https://gquittet.github.io/DeminEmojis/
 
+<p align="center">
+	<img src="assets/game.png" alt="Game (Preview)" width="320">
+</p>
+
 ---
 
 ## Why this game?
