@@ -3,12 +3,16 @@
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Version](https://img.shields.io/badge/version-1.0.8-blue.svg)
 
-DéminEmojis is a simple minesweeper game with emojis.
-It's free and there's no ads inside of it.
+`DéminEmojis` is a simple minesweeper game with emojis. It's free and there's
+no ads inside of it.
 
-Here's the link to the Android app: [https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper](https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper)
+You can install the applicatom from the [Play
+Store](https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper)
+or play it directly from your search browser.
 
-To play it into your browser : https://gquittet.github.io/DeminEmojis/
+**Link:** https://gquittet.github.io/DeminEmojis/
+
+---
 
 ## Why this game?
 
