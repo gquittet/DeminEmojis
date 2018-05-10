@@ -1,11 +1,22 @@
-# DéminEmojis
+# ![Logo](assets/logo.png "DéminEmojis logo") DéminEmojis
 
-DéminEmojis is a simple minesweeper game with emojis.  
-It's free and there's no ads inside of it.  
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Version](https://img.shields.io/badge/version-1.0.8-blue.svg)
 
-Here's the link to the Android app: [https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper](https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper)
+`DéminEmojis` is a simple minesweeper game with emojis. It's free and there's
+no ads inside of it.
 
-To play it into your browser : https://gquittet.github.io/DeminEmojis/
+You can install the applicatom from the [Play
+Store](https://play.google.com/store/apps/details?id=com.teamglider.emojisweeper)
+or play it directly from your search browser.
+
+**Link:** https://gquittet.github.io/DeminEmojis/
+
+<p align="center">
+	<img src="assets/game.png" alt="Game (Preview)" width="320">
+</p>
+
+---
 
 ## Why this game?
 
@@ -33,3 +44,6 @@ only but I've made an exception for this game.
 | Freepik                   | [https://www.freepik.com/](https://www.freepik.com/)   |
 | Creaticca Creative Agency | [http://www.creaticca.com/](http://www.creaticca.com/) |
 
+## License
+
+Code is under the [MIT License](https://github.com/gquittet/DeminEmojis/blob/master/LICENSE).
